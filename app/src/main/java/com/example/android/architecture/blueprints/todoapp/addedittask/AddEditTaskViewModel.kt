@@ -16,6 +16,7 @@
 
 package com.example.android.architecture.blueprints.todoapp.addedittask
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -33,6 +34,8 @@ import kotlinx.coroutines.launch
 class AddEditTaskViewModel(
     private val tasksRepository: TasksRepository
 ) : ViewModel() {
+
+    private val priorityList = arrayListOf<String>("Low","Medium","High")
 
     // Two-way databinding, exposing MutableLiveData
     val title = MutableLiveData<String>()
@@ -90,6 +93,10 @@ class AddEditTaskViewModel(
     private fun onTaskLoaded(task: Task) {
         title.value = task.title
         description.value = task.description
+        Log.e("onTaskLoaded",task.priority)
+        Log.e("priorityIdValueB",priorityIdValue.toString())
+        priorityIdValue = task.priority
+        Log.e("priorityIdValueA",priorityIdValue.toString())
         taskCompleted = task.isCompleted
         _dataLoading.value = false
         isDataLoaded = true
@@ -103,21 +110,23 @@ class AddEditTaskViewModel(
     fun saveTask() {
         val currentTitle = title.value
         val currentDescription = description.value
+        val currentPriority = priorityIdValue.toString()
+
 
         if (currentTitle == null || currentDescription == null) {
             _snackbarText.value = Event(R.string.empty_task_message)
             return
         }
         if (Task(currentTitle, currentDescription).isEmpty) {
-            _snackbarText.value = Event(R.string.empty_task_message)
+            _snackbarText.value = Event(R.string.empty_task_message )
             return
         }
 
         val currentTaskId = taskId
-        if (isNewTask || currentTaskId == null) {
-            createTask(Task(currentTitle, currentDescription))
+        if (isNewTask || currentTaskId == null ) {
+            createTask(Task(currentTitle, currentDescription,currentPriority))
         } else {
-            val task = Task(currentTitle, currentDescription, taskCompleted, currentTaskId)
+            val task = Task(currentTitle, currentDescription,currentPriority, taskCompleted, currentTaskId)
             updateTask(task)
         }
     }
@@ -136,4 +145,26 @@ class AddEditTaskViewModel(
             _taskUpdatedEvent.value = Event(Unit)
         }
     }
+
+    val priorityIdItemPosition = MutableLiveData<Int>()
+    var priorityIdValue
+        get() =
+            priorityIdItemPosition.value?.let {
+                priorityList.get(it)
+            }
+        set(value) {
+            val position = priorityList.indexOfFirst {
+                it == value
+            } ?: -1
+            if (position != -1) {
+                priorityIdItemPosition.value = position
+            }
+        }
+    val priorityIdItem
+        get() =
+            priorityIdItemPosition.value?.let {
+                priorityList.get(it)
+            }
+
+//    var priorityList List<String>? = null
 }

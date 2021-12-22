@@ -63,6 +63,9 @@ class AddEditTaskFragment : Fragment() {
         setupNavigation()
         this.setupRefreshLayout(viewDataBinding.refreshLayout)
         viewModel.start(args.taskId)
+
+        val position = viewModel.priorityIdItemPosition.value
+        viewModel.priorityIdItemPosition.value = position?.let { position+1 }?: 0
     }
 
     private fun setupSnackbar() {
@@ -76,4 +79,5 @@ class AddEditTaskFragment : Fragment() {
             findNavController().navigate(action)
         })
     }
+
 }

@@ -74,9 +74,29 @@
                         android:imeOptions="flagNoExtractUi"
                         android:text="@={viewmodel.description}" />
 
+                    <LinearLayout
+                        android:id="@+id/linearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
+
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/task_detail_priority_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="1dp"
+                            android:selectedItemPosition="@={viewmodel.priorityIdItemPosition}"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:spinnerMode="dropdown"
+                            android:entries="@array/priority"
+                            style="@style/Widget.AppCompat.Spinner.DropDown" />
+                    </LinearLayout>
+
                 </LinearLayout>
             </ScrollView>
         </com.example.android.architecture.blueprints.todoapp.ScrollChildSwipeRefreshLayout>
+
+
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/save_task_fab"

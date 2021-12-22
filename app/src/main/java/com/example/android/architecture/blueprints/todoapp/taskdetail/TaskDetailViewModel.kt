@@ -15,13 +15,9 @@
  */
 package com.example.android.architecture.blueprints.todoapp.taskdetail
 
+import android.util.Log
 import androidx.annotation.StringRes
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
-import androidx.lifecycle.switchMap
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.android.architecture.blueprints.todoapp.Event
 import com.example.android.architecture.blueprints.todoapp.R
 import com.example.android.architecture.blueprints.todoapp.data.Result
@@ -37,6 +33,8 @@ class TaskDetailViewModel(
     private val tasksRepository: TasksRepository
 ) : ViewModel() {
 
+    private val priorityList = arrayListOf<String>("Low","Medium","High")
+
     private val _taskId = MutableLiveData<String>()
 
     private val _task = _taskId.switchMap { taskId ->
@@ -45,6 +43,7 @@ class TaskDetailViewModel(
     val task: LiveData<Task?> = _task
 
     val isDataAvailable: LiveData<Boolean> = _task.map { it != null }
+
 
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
@@ -92,9 +91,17 @@ class TaskDetailViewModel(
         }
         // Trigger the load
         _taskId.value = taskId
+
+//        spinnerSelectedPosition.postValue(getSelectedItemPosition(_task.value?.priority ?: "Low"))
+
+
+
     }
 
+
+
     private fun computeResult(taskResult: Result<Task>): Task? {
+        Log.e("computeResult",task.value?.priority.toString())
         return if (taskResult is Success) {
             taskResult.data
         } else {
@@ -105,9 +112,11 @@ class TaskDetailViewModel(
 
     fun refresh() {
         // Refresh the repository and the task will be updated automatically.
+        Log.e("refresh",task.value?.priority.toString())
         _task.value?.let {
             _dataLoading.value = true
             viewModelScope.launch {
+                Log.e("refresh_init",it.priority.toString())
                 tasksRepository.refreshTask(it.id)
                 _dataLoading.value = false
             }
@@ -117,4 +126,5 @@ class TaskDetailViewModel(
     private fun showSnackbarMessage(@StringRes message: Int) {
         _snackbarText.value = Event(message)
     }
+
 }

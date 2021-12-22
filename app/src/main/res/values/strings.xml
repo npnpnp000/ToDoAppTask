@@ -62,4 +62,10 @@
     <string name="tasks_header_image_content_description">Tasks header image</string>
     <string name="no_tasks_image_content_description">No tasks image</string>
 
+    <array name="priority">
+        <item name="Low">Low</item>
+        <item name="Medium">Medium</item>
+        <item name="High">High</item>
+    </array>
+
 </resources>

@@ -16,6 +16,7 @@
 package com.example.android.architecture.blueprints.todoapp.taskdetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -89,6 +90,9 @@ class TaskDetailFragment : Fragment() {
         viewModel.start(args.taskId)
 
         setHasOptionsMenu(true)
+
+
+
         return view
     }
 
@@ -105,4 +109,5 @@ class TaskDetailFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.taskdetail_fragment_menu, menu)
     }
+
 }

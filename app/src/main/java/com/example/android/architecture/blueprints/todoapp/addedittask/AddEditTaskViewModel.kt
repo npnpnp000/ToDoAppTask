@@ -26,6 +26,7 @@ import com.example.android.architecture.blueprints.todoapp.R
 import com.example.android.architecture.blueprints.todoapp.data.Result.Success
 import com.example.android.architecture.blueprints.todoapp.data.Task
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository
+import com.example.android.architecture.blueprints.todoapp.util.Priority
 import kotlinx.coroutines.launch
 
 /**
@@ -35,7 +36,7 @@ class AddEditTaskViewModel(
     private val tasksRepository: TasksRepository
 ) : ViewModel() {
 
-    private val priorityList = arrayListOf<String>("Low","Medium","High")
+    private val priorityList = arrayListOf<String>(Priority.low.value,Priority.medium.value,Priority.high.value)
 
     // Two-way databinding, exposing MutableLiveData
     val title = MutableLiveData<String>()

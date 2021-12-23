@@ -17,12 +17,15 @@
 package com.example.android.architecture.blueprints.todoapp.tasks
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -52,6 +55,10 @@ class TasksFragment : Fragment() {
 
     private lateinit var listAdapter: TasksAdapter
 
+    private lateinit var viewSortImage : AppCompatImageButton
+
+    private var sortState = TasksSortType.NO_SORTED
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -59,6 +66,7 @@ class TasksFragment : Fragment() {
     ): View {
         viewDataBinding = TasksFragBinding.inflate(inflater, container, false).apply {
             viewmodel = viewModel
+            viewSortImage = activity?.findViewById(R.id.sort_imb) ?: AppCompatImageButton(requireContext())
         }
         setHasOptionsMenu(true)
         return viewDataBinding.root
@@ -76,10 +84,17 @@ class TasksFragment : Fragment() {
             }
             R.id.menu_refresh -> {
                 viewModel.loadTasks(true)
+                refreshSort()
                 true
             }
             else -> false
         }
+
+    private fun refreshSort() {
+        sortState = TasksSortType.NO_SORTED
+        viewSortImage.setImageResource(R.drawable.ic_baseline_sort_24)
+        viewModel.getSavedSortType(sortState)
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.tasks_fragment_menu, menu)
@@ -87,7 +102,7 @@ class TasksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Log.e("onViewCreated","-------------------------------")
         // Set the lifecycle owner to the lifecycle of the view
         viewDataBinding.lifecycleOwner = this.viewLifecycleOwner
         setupSnackbar()
@@ -95,6 +110,32 @@ class TasksFragment : Fragment() {
         setupRefreshLayout(viewDataBinding.refreshLayout, viewDataBinding.tasksList)
         setupNavigation()
         setupFab()
+        setupSortToggle()
+    }
+
+    private fun setupSortToggle() {
+        Log.e("setupSortToggle",sortState.name)
+        viewSortImage.setOnClickListener {
+            when(sortState){
+                TasksSortType.NO_SORTED -> {
+                    Log.e("NO_SORTED",sortState.name)
+                    sortState = TasksSortType.UP_SORTED
+                    viewSortImage.setImageResource(R.drawable.ic_baseline_sort_24_selected)
+                }
+                TasksSortType.UP_SORTED ->{
+                    Log.e("UP_SORTED",sortState.name)
+                    sortState = TasksSortType.DOWN_SORTED
+                    viewSortImage.rotationX = 180F
+                }
+                TasksSortType.DOWN_SORTED ->{
+                    Log.e("DOWN_SORTED",sortState.name)
+                    sortState = TasksSortType.UP_SORTED
+                    viewSortImage.rotationX = 0F
+                }
+            }
+            viewModel.getSavedSortType(sortState)
+        }
+
     }
 
     private fun setupNavigation() {
@@ -123,7 +164,8 @@ class TasksFragment : Fragment() {
                     when (it.itemId) {
                         R.id.active -> TasksFilterType.ACTIVE_TASKS
                         R.id.completed -> TasksFilterType.COMPLETED_TASKS
-                        else -> TasksFilterType.ALL_TASKS
+                        else -> {TasksFilterType.ALL_TASKS
+                        }
                     }
                 )
                 true

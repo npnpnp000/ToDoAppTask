@@ -35,7 +35,12 @@ import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepo
 import com.example.android.architecture.blueprints.todoapp.tasks.TasksFilterType.ACTIVE_TASKS
 import com.example.android.architecture.blueprints.todoapp.tasks.TasksFilterType.ALL_TASKS
 import com.example.android.architecture.blueprints.todoapp.tasks.TasksFilterType.COMPLETED_TASKS
+import com.example.android.architecture.blueprints.todoapp.tasks.TasksSortType.*
+import com.example.android.architecture.blueprints.todoapp.util.Priority
 import kotlinx.coroutines.launch
+import java.lang.Exception
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * ViewModel for the task list screen.
@@ -46,6 +51,7 @@ class TasksViewModel(
 ) : ViewModel() {
 
     private val _forceUpdate = MutableLiveData<Boolean>(false)
+    private var sortState: TasksSortType = NO_SORTED
 
     private val _items: LiveData<List<Task>> = _forceUpdate.switchMap { forceUpdate ->
         if (forceUpdate) {
@@ -59,6 +65,8 @@ class TasksViewModel(
     }
 
     val items: LiveData<List<Task>> = _items
+
+    val SortState: TasksSortType = NO_SORTED
 
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
@@ -199,7 +207,8 @@ class TasksViewModel(
         if (tasksResult is Success) {
             isDataLoadingError.value = false
             viewModelScope.launch {
-                result.value = filterItems(tasksResult.data, getSavedFilterType())
+                val sortedResult = (sortItems(tasksResult.data, sortState ))
+                result.value = filterItems(sortedResult, getSavedFilterType())
             }
         } else {
             result.value = emptyList()
@@ -234,13 +243,69 @@ class TasksViewModel(
         return tasksToShow
         }
 
+    private fun sortItems(tasks: List<Task>,tasksSortType :TasksSortType): List<Task> {
+        // We sort the tasks based on the tasksSortType
+
+        return when (tasksSortType) {
+            NO_SORTED -> tasks
+            DOWN_SORTED -> sortDown(tasks)
+            UP_SORTED -> sortUp(tasks)
+        }
+    }
+
     fun refresh() {
         _forceUpdate.value = true
     }
-
     private fun getSavedFilterType(): TasksFilterType {
         return savedStateHandle.get(TASKS_FILTER_SAVED_STATE_KEY) ?: ALL_TASKS
     }
+     fun getSavedSortType(sortType :TasksSortType) {
+         sortState = sortType
+         setFiltering(getSavedFilterType())
+         loadTasks(true)
+     }
+
+    private fun sortUp(tasks: List<Task>): List<Task> {
+        return sortDown(tasks).reversed()
+    }
+
+    private fun sortDown(tasks: List<Task>): List<Task> {
+        val sortedTasks = ArrayList<Task>()
+
+        sortedTasks.addAll(tasks)
+
+        Collections.sort(sortedTasks, Comparator<Task> { Task1, Task2 ->
+            var p1: Int
+            try {
+//                p1 = Priority.valueOf(Task1.priority).ordinal
+                p1 = getIntPriority(Task1.priority)
+            } catch (e: Exception) {
+                p1 = 0
+                e.printStackTrace()
+            }
+            var p2: Int
+            try {
+//                p2 = Priority.valueOf(Task2.priority).ordinal
+                p2 = getIntPriority(Task2.priority)
+            } catch (e: Exception) {
+                p2 = 0
+                e.printStackTrace()
+            }
+            Integer.compare(p1, p2) //(int) (p1 - p2);
+        })
+
+        return sortedTasks
+    }
+
+    private fun getIntPriority(priority: String): Int {
+        return when(priority){
+            Priority.low.value -> 1
+            Priority.medium.value -> 2
+            Priority.high.value -> 3
+            else -> 0
+        }
+    }
+
 }
 
 // Used to save the current filtering in SavedStateHandle.

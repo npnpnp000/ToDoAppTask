@@ -15,9 +15,15 @@
  */
 package com.example.android.architecture.blueprints.todoapp.data
 
+import android.widget.TextView
+import androidx.annotation.StringRes
+import androidx.databinding.BindingAdapter
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.android.architecture.blueprints.todoapp.R
 import com.example.android.architecture.blueprints.todoapp.util.Priority
 import java.util.UUID
 
@@ -47,6 +53,19 @@ data class Task @JvmOverloads constructor(
 
     val isEmpty
         get() = title.isEmpty() || description.isEmpty()
-    val priorityForList : String
-        get() = priority
+    val priorityForList :  String
+         get() =  priority
+
+    @StringRes
+    fun setPriority(priority: String) : Int {
+        return when(priority){
+            "Low" -> R.string.priority_low
+            "Medium" -> R.string.priority_medium
+            "High" -> R.string.priority_high
+            else -> R.string.priority_low
+        }
+    }
+
+
+
 }

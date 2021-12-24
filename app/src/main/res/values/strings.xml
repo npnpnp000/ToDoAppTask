@@ -34,7 +34,6 @@
     <string name="statistics_title">Statistics</string>
     <string name="statistics_no_tasks">You have no tasks.</string>
     <string name="statistics_active_tasks">Active tasks: %.1f%%</string>
-    <string name="statistics_completed_tasks">Completed tasks: %.1f%%</string>
     <string name="statistics_error">Error loading statistics.</string>
     <string name="no_data">No data</string>
     <string name="loading">LOADING</string>
@@ -56,16 +55,22 @@
     <string name="refresh">Refresh</string>
     <string name="successfully_deleted_task_message">Task was deleted</string>
     <string name="successfully_added_task_message">Task added</string>
-    <string name="no_data_description" />
+    <string name="no_data_description" translatable="false" />
 
     <!-- Content Descriptions -->
     <string name="tasks_header_image_content_description">Tasks header image</string>
     <string name="no_tasks_image_content_description">No tasks image</string>
 
     <array name="priority">
-        <item name="Low">Low</item>
-        <item name="Medium">Medium</item>
-        <item name="High">High</item>
+        <item name="Low">@string/priority_low</item>
+        <item name="Medium">@string/priority_medium</item>
+        <item name="High">@string/priority_high</item>
     </array>
+
+    <string name="statistics_completed_tasks">Completed tasks: %.1f%%</string>
+    <string name="priority_low">Low</string>
+    <string name="priority_medium">Medium</string>
+    <string name="priority_high">High</string>
+
 
 </resources>

@@ -27,6 +27,7 @@ import com.example.android.architecture.blueprints.todoapp.data.Result.Success
 import com.example.android.architecture.blueprints.todoapp.data.Task
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository
 import com.example.android.architecture.blueprints.todoapp.util.Priority
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.launch
 
 /**
@@ -94,10 +95,9 @@ class AddEditTaskViewModel(
     private fun onTaskLoaded(task: Task) {
         title.value = task.title
         description.value = task.description
-        Log.e("onTaskLoaded",task.priority)
-        Log.e("priorityIdValueB",priorityIdValue.toString())
+
         priorityIdValue = task.priority
-        Log.e("priorityIdValueA",priorityIdValue.toString())
+
         taskCompleted = task.isCompleted
         _dataLoading.value = false
         isDataLoaded = true
@@ -167,5 +167,4 @@ class AddEditTaskViewModel(
                 priorityList.get(it)
             }
 
-//    var priorityList List<String>? = null
 }

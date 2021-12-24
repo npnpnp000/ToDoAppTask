@@ -16,7 +16,10 @@
 package com.example.android.architecture.blueprints.todoapp.taskdetail
 
 import android.util.Log
+import android.util.TypedValue
+import android.widget.TextView
 import androidx.annotation.StringRes
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.*
 import com.example.android.architecture.blueprints.todoapp.Event
 import com.example.android.architecture.blueprints.todoapp.R
@@ -24,6 +27,8 @@ import com.example.android.architecture.blueprints.todoapp.data.Result
 import com.example.android.architecture.blueprints.todoapp.data.Result.Success
 import com.example.android.architecture.blueprints.todoapp.data.Task
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository
+import com.example.android.architecture.blueprints.todoapp.tasks.TasksSortType
+import com.example.android.architecture.blueprints.todoapp.util.Priority
 import kotlinx.coroutines.launch
 
 /**
@@ -33,7 +38,6 @@ class TaskDetailViewModel(
     private val tasksRepository: TasksRepository
 ) : ViewModel() {
 
-    private val priorityList = arrayListOf<String>("Low","Medium","High")
 
     private val _taskId = MutableLiveData<String>()
 
@@ -42,8 +46,14 @@ class TaskDetailViewModel(
     }
     val task: LiveData<Task?> = _task
 
+
     val isDataAvailable: LiveData<Boolean> = _task.map { it != null }
 
+//    private val _taskPriority = MutableLiveData<String>()
+//    val taskPriority: LiveData<String> = _taskPriority
+
+    private val _taskPriority = MutableLiveData<Int>()
+    val taskPriority: LiveData<Int> = _taskPriority
 
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
@@ -85,6 +95,7 @@ class TaskDetailViewModel(
     }
 
     fun start(taskId: String?) {
+        _taskPriority.value= setPriority("")
         // If we're already loading or already loaded, return (might be a config change)
         if (_dataLoading.value == true || taskId == _taskId.value) {
             return
@@ -92,31 +103,42 @@ class TaskDetailViewModel(
         // Trigger the load
         _taskId.value = taskId
 
-//        spinnerSelectedPosition.postValue(getSelectedItemPosition(_task.value?.priority ?: "Low"))
-
-
-
     }
+    @StringRes
+    private fun computeResultPriority(taskResult: Result<Task>): Int {
 
-
-
-    private fun computeResult(taskResult: Result<Task>): Task? {
-        Log.e("computeResult",task.value?.priority.toString())
-        return if (taskResult is Success) {
-            taskResult.data
+         if (taskResult is Success) {
+            Log.e("taskResult", taskResult.data.priority)
+            return when( taskResult.data.priority) {
+                "Low" -> R.string.priority_low
+                "Medium" -> R.string.priority_medium
+                "High" -> R.string.priority_high
+                else -> R.string.priority_low
+            }
         } else {
             showSnackbarMessage(R.string.loading_tasks_error)
+            return  R.string.priority_low
+        }
+    }
+
+    private fun computeResult(taskResult: Result<Task>): Task? {
+
+        return if (taskResult is Success) {
+            _taskPriority.value= (setPriority(taskResult.data.priority))
+            taskResult.data
+        } else {
+             showSnackbarMessage(R.string.loading_tasks_error)
             null
         }
     }
 
     fun refresh() {
         // Refresh the repository and the task will be updated automatically.
-        Log.e("refresh",task.value?.priority.toString())
+
         _task.value?.let {
             _dataLoading.value = true
             viewModelScope.launch {
-                Log.e("refresh_init",it.priority.toString())
+
                 tasksRepository.refreshTask(it.id)
                 _dataLoading.value = false
             }
@@ -127,4 +149,17 @@ class TaskDetailViewModel(
         _snackbarText.value = Event(message)
     }
 
+
+    @StringRes
+    fun setPriority(string: String) : Int {
+        Log.e("setPriority",taskPriority.value.toString())
+        return when(string){
+            "Low" -> R.string.priority_low
+            "Medium" -> R.string.priority_medium
+            "High" -> R.string.priority_high
+            else -> {Log.e("setPriority","else")
+                R.string.priority_low }
+        }
+
+    }
 }

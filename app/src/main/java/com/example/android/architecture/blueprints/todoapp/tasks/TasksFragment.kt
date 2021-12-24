@@ -67,6 +67,8 @@ class TasksFragment : Fragment() {
         viewDataBinding = TasksFragBinding.inflate(inflater, container, false).apply {
             viewmodel = viewModel
             viewSortImage = activity?.findViewById(R.id.sort_imb) ?: AppCompatImageButton(requireContext())
+            viewSortImage.visibility = View.VISIBLE
+
         }
         setHasOptionsMenu(true)
         return viewDataBinding.root
@@ -102,7 +104,6 @@ class TasksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.e("onViewCreated","-------------------------------")
         // Set the lifecycle owner to the lifecycle of the view
         viewDataBinding.lifecycleOwner = this.viewLifecycleOwner
         setupSnackbar()
@@ -114,21 +115,17 @@ class TasksFragment : Fragment() {
     }
 
     private fun setupSortToggle() {
-        Log.e("setupSortToggle",sortState.name)
         viewSortImage.setOnClickListener {
             when(sortState){
                 TasksSortType.NO_SORTED -> {
-                    Log.e("NO_SORTED",sortState.name)
                     sortState = TasksSortType.UP_SORTED
                     viewSortImage.setImageResource(R.drawable.ic_baseline_sort_24_selected)
                 }
                 TasksSortType.UP_SORTED ->{
-                    Log.e("UP_SORTED",sortState.name)
                     sortState = TasksSortType.DOWN_SORTED
                     viewSortImage.rotationX = 180F
                 }
                 TasksSortType.DOWN_SORTED ->{
-                    Log.e("DOWN_SORTED",sortState.name)
                     sortState = TasksSortType.UP_SORTED
                     viewSortImage.rotationX = 0F
                 }
@@ -140,9 +137,11 @@ class TasksFragment : Fragment() {
 
     private fun setupNavigation() {
         viewModel.openTaskEvent.observe(viewLifecycleOwner, EventObserver {
+
             openTaskDetails(it)
         })
         viewModel.newTaskEvent.observe(viewLifecycleOwner, EventObserver {
+
             navigateToAddNewTask()
         })
     }

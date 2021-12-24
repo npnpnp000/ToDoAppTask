@@ -15,8 +15,11 @@
  */
 package com.example.android.architecture.blueprints.todoapp.tasks
 
+import android.content.Context
+import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -66,7 +69,7 @@ class TasksViewModel(
 
     val items: LiveData<List<Task>> = _items
 
-    val SortState: TasksSortType = NO_SORTED
+//    var sortPriority: LiveData<String> = bindPriority
 
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
@@ -274,10 +277,9 @@ class TasksViewModel(
 
         sortedTasks.addAll(tasks)
 
-        Collections.sort(sortedTasks, Comparator<Task> { Task1, Task2 ->
+        Collections.sort(sortedTasks,  { Task1, Task2 ->
             var p1: Int
             try {
-//                p1 = Priority.valueOf(Task1.priority).ordinal
                 p1 = getIntPriority(Task1.priority)
             } catch (e: Exception) {
                 p1 = 0
@@ -285,7 +287,6 @@ class TasksViewModel(
             }
             var p2: Int
             try {
-//                p2 = Priority.valueOf(Task2.priority).ordinal
                 p2 = getIntPriority(Task2.priority)
             } catch (e: Exception) {
                 p2 = 0
@@ -305,6 +306,17 @@ class TasksViewModel(
             else -> 0
         }
     }
+
+    @StringRes
+    fun setPriority(priority: String) : Int {
+        return when(priority){
+            "Low" -> R.string.priority_low
+            "Medium" -> R.string.priority_medium
+            "High" -> R.string.priority_high
+            else -> R.string.priority_low
+        }
+    }
+
 
 }
 

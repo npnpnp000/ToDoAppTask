@@ -23,6 +23,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -51,6 +52,8 @@ class TaskDetailFragment : Fragment() {
         setupFab()
         view?.setupSnackbar(this, viewModel.snackbarText, Snackbar.LENGTH_SHORT)
         setupNavigation()
+       val viewSortImage = activity?.findViewById(R.id.sort_imb) ?: AppCompatImageButton(requireContext())
+        viewSortImage.visibility = View.INVISIBLE
         this.setupRefreshLayout(viewDataBinding.refreshLayout)
     }
 
@@ -88,6 +91,7 @@ class TaskDetailFragment : Fragment() {
         viewDataBinding.lifecycleOwner = this.viewLifecycleOwner
 
         viewModel.start(args.taskId)
+
 
         setHasOptionsMenu(true)
 

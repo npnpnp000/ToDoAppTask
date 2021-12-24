@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">משימות</string>
+    <string name="list_title">רשימת משימות</string>
+    <string name="refresh">רענן</string>
+    <string name="nav_active">פעיל</string>
+    <string name="edit_task">ערוך משימה</string>
+    <string name="statistics_title">סטיסטיקה</string>
+    <string name="nav_completed">סויים</string>
+    <string name="priority_low">נמוכה</string>
+    <string name="label_active">משימות פעילות</string>
+    <string name="completed_tasks_cleared">משימות עשויות נמחקו</string>
+    <string name="navigation_view_header_title">משימות</string>
+    <string name="task_marked_active">משימה סומנה כפעילה</string>
+    <string name="task_marked_complete">משימה סומנה כעשויה</string>
+    <string name="successfully_saved_task_message">משימה נשמרה</string>
+    <string name="successfully_deleted_task_message">משימה נמחקה</string>
+    <string name="empty_task_message">משימה לא יכולה להיות ריקה</string>
+    <string name="add_task">"משימה חדשה "</string>
+    <string name="menu_filter">מסנן</string>
+    <string name="label_completed">מסימות שסוימו</string>
+    <string name="menu_delete_task">מחק משימה</string>
+    <string name="menu_clear">מחק עשויים</string>
+    <string name="label_all">כל המשימות</string>
+    <string name="title_hint">כותרת</string>
+    <string name="loading">טוען</string>
+    <string name="description_hint">הכנס את המשימה שלך כאן</string>
+    <string name="nav_all">הכל</string>
+    <string name="successfully_added_task_message">הוספה משימה</string>
+    <string name="priority_high">גבוהה</string>
+    <string name="loading_tasks_error">בעיה בטעינת משימה</string>
+    <string name="statistics_error">בעיה בטעינת הסטיסטיקות</string>
+    <string name="priority_medium">בינונית</string>
+    <string name="no_data">אין מידע</string>
+    <string name="no_tasks_completed">אין לך משימות שסוימו</string>
+    <string name="no_tasks_active">אין לך משימות פעילות</string>
+    <string name="statistics_no_tasks">"אין לך משימות "</string>
+    <string name="no_tasks_all">אין לך משימות</string>
+    <string name="tasks_header_image_content_description">Tasks header image</string>
+    <string name="no_tasks_image_content_description">No tasks image</string>
+    <string name="statistics_completed_tasks">" %.1f%% משימות שסויימו"</string>
+    <string name="statistics_active_tasks">" %.1f%% משימות פעילות "</string>
+</resources>
